@@ -3,7 +3,7 @@ FROM openjdk:17-jdk-slim
 
 # --- Environment Setup ---
 # 1. Install Node.js, Yarn, and essential build tools
-ENV NODE_VERSION=18.17.0
+ENV NODE_VERSION=18.20.4
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     git \

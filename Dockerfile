@@ -1,57 +1,47 @@
-# Use a base image with a compatible JDK. OpenJDK 17 is a common choice for modern Android builds.
+# Use a base image with a compatible JDK for Android
 FROM openjdk:17-jdk-slim
 
-# Set environment variables for the Android SDK
+# --- Environment Setup ---
+# 1. Install Node.js, Yarn, and essential build tools
+ENV NODE_VERSION=18.17.0
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    unzip \
+    wget \
+    && curl -sL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" | tar -xJ -C /usr/local --strip-components=1 \
+    && npm install -g yarn \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Install the Android SDK Command-Line Tools
 ENV ANDROID_SDK_ROOT="/sdk"
 ENV PATH="$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools"
-
-# Set a consistent working directory
-WORKDIR /app
-
-# Install essential packages and Android command-line tools
-# Using ARG to make versions easily updatable
 ARG CMDLINE_TOOLS_VERSION="11076708"
 ARG BUILD_TOOLS_VERSION="34.0.0"
 ARG PLATFORM_VERSION="34"
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    wget \
-    unzip \
-    git \
-    && rm -rf /var/lib/apt/lists/* \
-    && wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip" -O /tmp/cmdline-tools.zip \
+RUN wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip" -O /tmp/cmdline-tools.zip \
     && mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools \
     && unzip -q /tmp/cmdline-tools.zip -d ${ANDROID_SDK_ROOT}/cmdline-tools \
     && mv ${ANDROID_SDK_ROOT}/cmdline-tools/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/latest \
     && rm /tmp/cmdline-tools.zip \
-    # Accept licenses automatically
     && yes | sdkmanager --licenses > /dev/null \
-    # Install the required SDK packages
     && sdkmanager "platform-tools" "platforms;android-${PLATFORM_VERSION}" "build-tools;${BUILD_TOOLS_VERSION}"
 
-# --- Optimization: Leverage Docker Layer Caching ---
-# First, copy only the files needed to download dependencies.
-# This layer will only be rebuilt if these specific files change.
+# --- Application Build ---
+# Set the main working directory for the app
+WORKDIR /app
 
-# WRONG PATHS (Before)
-# COPY build.gradle gradlew settings.gradle ./
-# COPY gradle/ gradle/
-# COPY app/build.gradle app/
+# Copy all the project files into the container
+COPY . .
 
-# CORRECT PATHS (After - assuming the folder is named 'touchblack')
-COPY touchblack/build.gradle touchblack/gradlew touchblack/settings.gradle ./
-COPY touchblack/gradle/ gradle/
-COPY touchblack/app/build.gradle app/
+# Install JavaScript dependencies using Yarn
+RUN yarn install
 
-# Download dependencies. This step is cached as long as the build files don't change.
-# The --no-daemon flag is recommended for CI environments.
-RUN ./gradlew dependencies --no-daemon
-
-# Now, copy the rest of the application source code
-# WRONG PATH (Before)
-# COPY . .
-# CORRECT PATH (After)
-COPY touchblack/. .
+# Move into the android directory to run the native build
+WORKDIR /app/android
 
 # Grant execution permissions to the Gradle wrapper script
 RUN chmod +x ./gradlew
+
+# Set the final command to run the build. This will execute when the container starts.
+CMD ["./gradlew", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]

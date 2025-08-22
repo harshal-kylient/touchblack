@@ -1,0 +1,29 @@
+{
+	"project_info": {
+		"project_number": "423273747355",
+		"project_id": "touchblack-prod",
+		"storage_bucket": "touchblack-prod.appspot.com"
+	},
+	"client": [
+		{
+			"client_info": {
+				"mobilesdk_app_id": "1:423273747355:android:0244550913aa426f93c73e",
+				"android_client_info": {
+					"package_name": "black.touch.app"
+				}
+			},
+			"oauth_client": [],
+			"api_key": [
+				{
+					"current_key": "AIzaSyCj2nquo_HfJSUsXpyCgYwS0hf0w0337z4"
+				}
+			],
+			"services": {
+				"appinvite_service": {
+					"other_platform_oauth_client": []
+				}
+			}
+		}
+	],
+	"configuration_version": "1"
+}

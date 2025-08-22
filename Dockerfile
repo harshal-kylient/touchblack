@@ -32,19 +32,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # --- Optimization: Leverage Docker Layer Caching ---
 # First, copy only the files needed to download dependencies.
 # This layer will only be rebuilt if these specific files change.
-COPY build.gradle gradlew settings.gradle ./
-COPY gradle/ gradle/
-COPY app/build.gradle app/
+
+# WRONG PATHS (Before)
+# COPY build.gradle gradlew settings.gradle ./
+# COPY gradle/ gradle/
+# COPY app/build.gradle app/
+
+# CORRECT PATHS (After - assuming the folder is named 'touchblack')
+COPY touchblack/build.gradle touchblack/gradlew touchblack/settings.gradle ./
+COPY touchblack/gradle/ gradle/
+COPY touchblack/app/build.gradle app/
 
 # Download dependencies. This step is cached as long as the build files don't change.
 # The --no-daemon flag is recommended for CI environments.
 RUN ./gradlew dependencies --no-daemon
 
 # Now, copy the rest of the application source code
-COPY . .
+# WRONG PATH (Before)
+# COPY . .
+# CORRECT PATH (After)
+COPY touchblack/. .
 
 # Grant execution permissions to the Gradle wrapper script
 RUN chmod +x ./gradlew
-
-# The default command is not set (CMD). This makes the image more flexible,
-# allowing us to pass the build command directly via 'docker run'.

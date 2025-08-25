@@ -43,5 +43,5 @@ RUN yarn install
 # Move into the android directory to run the native build
 WORKDIR /app/android
 
-# THE FIX IS HERE: We explicitly run the JS bundling and codegen task first.
-CMD ["./gradlew", ":app:bundleReleaseJsAndAssets", "assembleRelease", "bundleRelease", "--no-daemon"]
+# THE FIX IS HERE: We explicitly run the code generation task before building.
+CMD ["./gradlew", ":app:generateCodegenArtifactsFromSchema", "assembleRelease", "bundleRelease", "--no-daemon"]

@@ -20,7 +20,6 @@ ENV PATH="$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}
 ARG CMDLINE_TOOLS_VERSION="11076708"
 ARG BUILD_TOOLS_VERSION="34.0.0"
 ARG PLATFORM_VERSION="34"
-# The CMake version is specified here for clarity
 ARG CMAKE_VERSION="3.22.1"
 RUN wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${CMDLINE_TOOLS_VERSION}_latest.zip" -O /tmp/cmdline-tools.zip \
     && mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools \
@@ -29,9 +28,6 @@ RUN wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${C
     && rm /tmp/cmdline-tools.zip \
     && yes | sdkmanager --licenses > /dev/null \
     && sdkmanager "platform-tools" "platforms;android-${PLATFORM_VERSION}" "build-tools;${BUILD_TOOLS_VERSION}" "cmake;${CMAKE_VERSION}" \
-    #
-    # THE FIX IS HERE: Set execute permission on the ninja build tool
-    #
     && chmod +x /sdk/cmake/${CMAKE_VERSION}/bin/ninja
 
 # --- Application Build ---
@@ -47,5 +43,5 @@ RUN yarn install
 # Move into the android directory to run the native build
 WORKDIR /app/android
 
-# Set the final command to run the build. This will execute when the container starts.
-CMD ["./gradlew", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]
+# THE FIX IS HERE: Removed the 'clean' task.
+CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]

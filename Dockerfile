@@ -31,5 +31,5 @@ COPY . .
 RUN yarn install
 WORKDIR /app/android
 
-# THE FINAL COMMAND: Build the 'internalDebug' variant to get the environment switcher.
-CMD ["./gradlew", "assembleInternalDebug", "bundleInternalDebug", "--no-daemon"]
+# THE DIAGNOSTIC COMMAND: This will list all available Gradle tasks.
+CMD ["./gradlew", ":app:tasks", "--all"]

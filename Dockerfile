@@ -41,8 +41,8 @@ COPY . .
 RUN yarn install
 
 # Move into the android directory to run the native build
-WORKDIR /app
+WORKDIR /app/android
 
 # Point to the gradlew script inside the android folder and specify the project with "-p android".
 # This resolves the code generation and CMake errors.
-CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon", "--no-build-cache", "--refresh-dependencies", "--rerun-tasks"]
+CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]

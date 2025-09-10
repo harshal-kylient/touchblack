@@ -45,4 +45,4 @@ WORKDIR /app/android
 
 # THE FIX: We explicitly run the code generation task first to solve the ninja/cmake error,
 # then proceed with the client's desired 'assembleRelease' command.
-CMD ["./gradlew", ":app:generateCodegenArtifactsFromSchema", "assembleRelease", "bundleRelease", "--no-daemon"]
+CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]

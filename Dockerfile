@@ -44,4 +44,4 @@ WORKDIR /app
 
 # Execute the gradle command from the root, pointing to the android project
 # This is the key change that fixes the build order
-CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]
+CMD ["/bin/sh", "-c", "./android/gradlew -p android clean && ./android/gradlew -p android assembleRelease bundleRelease --no-daemon"]

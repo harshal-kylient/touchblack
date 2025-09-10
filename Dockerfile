@@ -45,4 +45,4 @@ WORKDIR /app
 
 # Point to the gradlew script inside the android folder and specify the project with "-p android".
 # This resolves the code generation and CMake errors.
-CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]
+CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon", "--no-build-cache", "--refresh-dependencies", "--rerun-tasks"]

@@ -25,8 +25,3 @@ apply plugin: "com.facebook.react.rootproject"
 // Add this snippet to the end of the file
 // This forces the preBuild task to depend on the React Native code generation task,
 // ensuring the necessary C++ files are created before CMake needs them.
-tasks.whenTaskAdded { task ->
-    if (task.name == 'preBuild') {
-        task.dependsOn "generateCodegenArtifactsFromSchema"
-    }
-}

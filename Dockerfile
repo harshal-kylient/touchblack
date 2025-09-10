@@ -43,7 +43,6 @@ RUN yarn install
 # Move into the android directory to run the native build
 WORKDIR /app
 
-# THE FIX: We explicitly run the code generation task first to solve the ninja/cmake error,
-# then proceed with the client's desired 'assembleRelease' command.
-# CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]
+# Point to the gradlew script inside the android folder and specify the project with "-p android".
+# This resolves the code generation and CMake errors.
 CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]

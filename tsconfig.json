@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"baseUrl": ".",
+		"module": "esnext",
+		"paths": {
+			"@components/*": ["components/*"],
+			"@utils/*": ["utils/*"],
+			"@presenters/*": ["presenters/*"],
+			"@models/*": ["models/*"],
+			"@entities/*": ["models/entities/*"],
+			"@dtos/*": ["models/dtos/*"],
+			"@network/*": ["network/*"],
+			"@constants/*": ["constants/*"],
+			"@assets/*": ["assets/*"]
+		}
+	},
+	"extends": "@react-native/typescript-config/tsconfig.json"
+}

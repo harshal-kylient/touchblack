@@ -1,0 +1,30 @@
+export interface IStudioFloor {
+	id: string;
+	name: string;
+	profile_picture_url?: string | null;
+	owner?: string | null;
+	city?: string | null;
+	locality?: string | null;
+	studio_floor_area?: string | null;
+	outdoor_area_for_set_construction?: string | null;
+	adjoining_studio_floors?: number | null;
+	access_door_size?: string | null;
+	crew_washroom?: number | null;
+	makeup_room?: number | null;
+	celebrity_lounges?: number | null;
+	large_vehicle_parking_space?: number | null;
+	attached_room?: number | null;
+	car_parking_space?: number | null;
+	catwalk?: boolean | null;
+	is_soundproof?: boolean | null;
+	is_air_conditioned?: boolean | null;
+	generator_backup?: number | null;
+	fire_detectors?: boolean | null;
+	kitchen_room?: boolean | null;
+	dining_room?: boolean | null;
+	adjoining_floors?: string | null;
+	working_hours?: string | null;
+	shift_duration?: number | null;
+	studio_charges_per_shift?: number | null;
+	advance_booking_amount?: number | null;
+}

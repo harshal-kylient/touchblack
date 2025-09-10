@@ -40,8 +40,10 @@ COPY . .
 # Install JavaScript dependencies using Yarn
 RUN yarn install
 
+# Move into the android directory to run the native build
 WORKDIR /app
 
-# Execute the gradle command from the root, pointing to the android project
-# This is the key change that fixes the build order
-CMD ["/bin/sh", "-c", "./android/gradlew -p android clean && ./android/gradlew -p android assembleRelease bundleRelease --no-daemon"]
+# THE FIX: We explicitly run the code generation task first to solve the ninja/cmake error,
+# then proceed with the client's desired 'assembleRelease' command.
+# CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]
+CMD ["./android/gradlew", "-p", "android", "clean", "assembleRelease", "bundleRelease", "--no-daemon"]

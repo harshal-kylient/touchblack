@@ -37,6 +37,6 @@ RUN yarn install
 WORKDIR /app/android
 
 # THE FINAL COMMAND:
-# 1. Run 'clean' first as a separate, safe step.
-# 2. Then, run the 'assembleInternalDebug' build to get the working APK.
-CMD ["sh", "-c", "./gradlew clean && ./gradlew assembleInternalDebug bundleInternalDebug --no-daemon"]
+# Explicitly run the code generation task first to solve the ninja/cmake error,
+# then proceed with the desired 'assembleRelease' command.
+CMD ["./gradlew", ":app:generateCodegenArtifactsFromSchema", "assembleRelease", "bundleRelease", "--no-daemon"]

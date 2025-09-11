@@ -1,4 +1,4 @@
-# Use a base image with a compatible JDK for Android
+# Use a modern, compatible OpenJDK base image for Android builds
 FROM openjdk:17-jdk-slim
 
 # --- Environment Setup ---
@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && npm install -g yarn \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install the Android SDK Command-Line Tools
+# 2. Install and configure the Android SDK Command-Line Tools
 ENV ANDROID_SDK_ROOT="/sdk"
 ENV PATH="$PATH:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools"
 ARG CMDLINE_TOOLS_VERSION="11076708"
@@ -31,18 +31,12 @@ RUN wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${C
     && chmod +x /sdk/cmake/${CMAKE_VERSION}/bin/ninja
 
 # --- Application Build ---
-# Set the main working directory for the app
 WORKDIR /app
-
-# Copy all the project files into the container
 COPY . .
-
-# Install JavaScript dependencies using Yarn
 RUN yarn install
-
-# Move into the android directory to run the native build
 WORKDIR /app/android
 
-# Point to the gradlew script inside the android folder and specify the project with "-p android".
-# This resolves the code generation and CMake errors.
-CMD ["./gradlew", "assembleRelease", "bundleRelease", "--no-daemon"]
+# THE FINAL COMMAND:
+# 1. Run 'clean' first as a separate, safe step.
+# 2. Then, run the 'assembleInternalDebug' build to get the working APK.
+CMD ["sh", "-c", "./gradlew clean && ./gradlew assembleInternalDebug bundleInternalDebug --no-daemon"]
